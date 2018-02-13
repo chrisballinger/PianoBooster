@@ -28,7 +28,8 @@
 #define __SETTINGS_H__
 
 #include <QSettings>
-#include <QDomDocument>
+#include <QtWidgets>
+#include <QtXml>
 #include "Song.h"
 #include "Notation.h"
 

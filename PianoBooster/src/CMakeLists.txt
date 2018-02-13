@@ -28,27 +28,17 @@ PROJECT( pianobooster )
 # enable warnings
 ADD_DEFINITIONS(-Wall)
 
-# by default only QtCore and QtGui modules are enabled
-# other modules must be enabled like this:
-SET(QT_USE_QTOPENGL TRUE)
-SET(QT_USE_QTXML TRUE)
-
-
 FIND_PACKAGE( OpenGL REQUIRED )
 
-# this command finds Qt4 libraries and sets all required variables
-# note that it's Qt4, not QT4 or qt4
-FIND_PACKAGE( Qt4 REQUIRED )
-
-# add some useful macros and variables
-# (QT_USE_FILE is a variable defined by FIND_PACKAGE( Qt4 ) that contains a path to CMake script)
-INCLUDE( ${QT_USE_FILE} )
+# Find the QtWidgets library
+find_package(Qt5Widgets)
+find_package(Qt5Xml)
+find_package(Qt5OpenGL)
 
 IF (USE_PCH)
 INCLUDE(precompile/PCHSupport_26.cmake)
 INCLUDE_DIRECTORIES( precompile .)
 ENDIF(USE_PCH)
-
 
 # Add in the link libraries for each operating system
 IF(${CMAKE_SYSTEM} MATCHES "Linux")
@@ -99,12 +89,6 @@ ENDIF(USE_FLUIDSYNTH)
 # we need this to be able to include headers produced by uic in our code
 # (CMAKE_BINARY_DIR holds a path to the build directory, while INCLUDE_DIRECTORIES() works just like INCLUDEPATH from qmake)
 INCLUDE_DIRECTORIES( ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_BINARY_DIR} ${OPENGL_INCLUDE_DIR} )
-
-# tell CMake what libraries our executable needs,
-# luckily FIND_PACKAGE prepared QT_LIBRARIES variable for us:
-LINK_LIBRARIES( ${QT_LIBRARIES} )
-
-
 
 SET(PB_BASE_SRCS MidiFile.cpp MidiTrack.cpp Song.cpp Conductor.cpp Util.cpp
     Chord.cpp Tempo.cpp MidiDevice.cpp MidiDeviceRt.cpp rtmidi/RtMidi.cpp ${PB_BASE_SRCS})
@@ -175,16 +159,10 @@ SET( PIANOBOOSTER_RCS
     ./application.qrc
 )
 
-# this command will generate rules that will run rcc on all files from PIANOBOOSTER_RCS
-# in result PIANOBOOSTER_RC_SRCS variable will contain paths to files produced by rcc
-QT4_ADD_RESOURCES( PIANOBOOSTER_RC_SRCS ${PIANOBOOSTER_RCS} )
-
-# this will run uic on .ui files:
-QT4_WRAP_UI( PIANOBOOSTER_UI_HDRS ${PIANOBOOSTER_UIS} )
-
-# and finally this will run moc:
-QT4_WRAP_CPP( PIANOBOOSTER_MOC_SRCS ${PIANOBOOSTER_MOC_HDRS} )
-
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 # here we instruct CMake to build "pianobooster" executable from all of the source files
 IF(APPLE)
@@ -211,6 +189,7 @@ IF (USE_PCH)
 ADD_PRECOMPILED_HEADER( pianobooster ${CMAKE_CURRENT_SOURCE_DIR}/precompile/precompile.h )
 ENDIF (USE_PCH)
 
+target_link_libraries (pianobooster Qt5::Widgets Qt5::Xml Qt5::OpenGL)
 
 INSTALL( FILES pianobooster.desktop DESTINATION share/applications )
 INSTALL(TARGETS pianobooster RUNTIME DESTINATION bin)

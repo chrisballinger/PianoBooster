@@ -27,7 +27,7 @@
 /*********************************************************************************/
 
 #include <QtGui>
-#include <QtOpenGL>
+#include <QtWidgets>
 
 #include <math.h>
 

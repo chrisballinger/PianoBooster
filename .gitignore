@@ -1,0 +1,10 @@
+.DS_Store
+CMakeCache.txt
+CMakeFiles/
+CMakeScripts/
+Debug/
+cmake_install.cmake
+pianobooster.build/
+pianobooster.xcodeproj/
+pianobooster_autogen/
+install_manifest.txt

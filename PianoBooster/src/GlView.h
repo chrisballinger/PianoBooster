@@ -29,7 +29,8 @@
 #define __GLVIEW_H__
 #include <QTime>
 #include <QBasicTimer>
-#include <QGLWidget>
+#include <QtWidgets>
+#include <QtOpenGL>
 #include "Song.h"
 #include "Score.h"
 #include "Settings.h"
